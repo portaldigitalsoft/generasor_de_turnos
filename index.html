@@ -3,44 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soberano Builder | Panel Maestro</title>
+    <title>Soberano Builder | Retorno Inteligente</title>
     <style>
         :root { --gold: #D4AF37; --dark-bg: #0a0a0a; --glass: rgba(255, 255, 255, 0.05); }
-        body { background: var(--dark-bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .builder-container { max-width: 850px; width: 100%; background: linear-gradient(145deg, #1a1a1a, #000); border: 2px solid var(--gold); border-radius: 20px; padding: 30px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); box-sizing: border-box; }
-        h1 { color: var(--gold); text-align: center; text-transform: uppercase; letter-spacing: 3px; border-bottom: 1px solid var(--gold); padding-bottom: 15px; margin-top: 0; }
-        .section { margin-bottom: 25px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; background: var(--glass); }
-        label { color: var(--gold); font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 8px; text-transform: uppercase; }
-        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--gold); background: #000; color: #fff; outline: none; box-sizing: border-box; margin-bottom: 15px; }
-        .grid-horarios { display: grid; grid-template-columns: 100px 1fr 1fr; gap: 15px; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.1); padding: 10px 0; }
-        .btn-generar { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 20px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.4s; font-size: 1rem; box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.2); }
-        .btn-generar:hover { background: var(--gold); color: #000; box-shadow: 0 0 30px var(--gold); }
-        #codigo_salida { width: 100%; height: 250px; margin-top: 25px; background: #050505; color: #00ff41; font-family: 'Courier New', monospace; border: 1px solid #444; padding: 15px; border-radius: 10px; display: none; box-sizing: border-box; }
-        .copy-info { color: #D4AF37; text-align: center; margin-top: 10px; display: none; font-weight: bold; animation: fade 1.5s infinite; }
-        @keyframes fade { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        * { box-sizing: border-box; }
+        body { background: var(--dark-bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .builder-container { max-width: 850px; width: 100%; background: linear-gradient(145deg, #1a1a1a, #000); border: 2px solid var(--gold); border-radius: 20px; padding: 20px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
+        h1 { color: var(--gold); text-align: center; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--gold); padding-bottom: 15px; font-size: 1.2rem; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; background: var(--glass); }
+        label { color: var(--gold); font-size: 0.75rem; font-weight: bold; display: block; margin-bottom: 5px; text-transform: uppercase; }
+        input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--gold); background: #000; color: #fff; outline: none; margin-bottom: 12px; font-size: 14px; }
+        .grid-horarios { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.1); padding: 10px 0; }
+        @media (max-width: 600px) { .grid-horarios { grid-template-columns: 1fr; text-align: center; } .time-inputs { justify-content: center; } }
+        .time-inputs { display: flex; gap: 5px; }
+        .time-inputs input { margin-bottom: 0; padding: 5px; }
+        .btn-generar { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.4s; font-size: 0.9rem; }
+        .btn-generar:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
+        #codigo_salida { width: 100%; height: 200px; margin-top: 20px; background: #050505; color: #00ff41; font-family: monospace; border: 1px solid #444; padding: 10px; border-radius: 10px; display: none; font-size: 12px; }
+        .copy-info { color: #D4AF37; text-align: center; margin-top: 10px; display: none; font-size: 0.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="builder-container">
-        <h1>🛠️ PANEL MAESTRO SOBERANO</h1>
+        <h1>🛠️ SOBERANO BUILDER V4</h1>
         
         <div class="section">
             <label>Nombre del Negocio:</label>
-            <input type="text" id="nombre_negocio" placeholder="Ej: Barbería El Soberano">
+            <input type="text" id="nombre_negocio" placeholder="Ej: Barbería Soberana">
             <label>WhatsApp (Sin el +):</label>
             <input type="text" id="ws_num" placeholder="5493764263698">
+            <label>URL de Retorno (Opcional):</label>
+            <input type="text" id="url_retorno" placeholder="Dejar vacío para 'Volver Atrás' automático">
         </div>
 
         <div class="section">
-            <label>CONFIGURAR HORARIOS DE ATENCIÓN</label>
+            <label style="text-align: center; margin-bottom:15px">HORARIOS DE ATENCIÓN</label>
             <div id="contenedor_dias"></div>
         </div>
 
-        <button class="btn-generar" onclick="fabricarCodigo()">Generar Módulo de Turnos 🚀</button>
+        <button class="btn-generar" onclick="fabricarCodigo()">Generar con Retorno Inteligente 🚀</button>
         
         <textarea id="codigo_salida" readonly></textarea>
-        <div id="copy_msg" class="copy-info">¡CÓDIGO GENERADO! COPIA Y PEGA EN TU TARJETA DIGITAL</div>
+        <div id="copy_msg" class="copy-info">¡CÓDIGO LISTO PARA COPIAR!</div>
     </div>
 
 <script>
@@ -51,26 +56,22 @@
         const div = document.createElement('div');
         div.className = 'grid-horarios';
         div.innerHTML = `
-            <div style="color:var(--gold); font-weight:bold">${dia}</div>
-            <div style="display:flex; gap:5px">
-                <input type="time" class="h-ini" value="08:30" style="margin:0">
-                <input type="time" class="h-fin" value="12:30" style="margin:0">
-            </div>
-            <div style="display:flex; gap:5px">
-                <input type="time" class="h-ini-t" value="16:30" style="margin:0">
-                <input type="time" class="h-fin-t" value="20:30" style="margin:0">
-            </div>
-            <div style="grid-column: span 3; font-size: 0.75rem;">
-                <label style="display:inline; margin:0; color:#888"><input type="checkbox" class="check-cerrado" ${dia==='Domingo'?'checked':''}> Marcar como Cerrado</label>
-            </div>
+            <div style="color:var(--gold); font-weight:bold; font-size: 0.9rem;">${dia}</div>
+            <div class="time-inputs"><input type="time" class="h-ini" value="08:30"><input type="time" class="h-fin" value="12:30"></div>
+            <div class="time-inputs"><input type="time" class="h-ini-t" value="16:30"><input type="time" class="h-fin-t" value="20:30"></div>
+            <div style="font-size: 0.7rem; color:#888;"><input type="checkbox" class="check-cerrado" ${dia==='Domingo'?'checked':''} style="width:auto;"> Cerrado</div>
         `;
         contenedor.appendChild(div);
     });
 
     function fabricarCodigo() {
-        const nombre = document.getElementById('nombre_negocio').value || "RESERVAR TURNO";
+        const nombre = document.getElementById('nombre_negocio').value || "RESERVA";
         const ws = document.getElementById('ws_num').value;
-        if(!ws) return alert("Por favor, ingresa el WhatsApp.");
+        const url = document.getElementById('url_retorno').value;
+        if(!ws) return alert("Ingresa el WhatsApp.");
+
+        // Lógica del botón volver: Si hay URL, la usa. Si no, usa history.back()
+        const accionVolver = url ? `window.location.href='${url}'` : `window.history.back()`;
 
         let config = {};
         document.querySelectorAll('.grid-horarios').forEach((row, i) => {
@@ -81,65 +82,43 @@
             };
         });
 
-        const code = `
-<div id="sob_modulo_root">
+        const finalCode = `<div id="sob_mod">
     <style>
-        .sob-card { max-width: 400px; margin: 20px auto; border: 2px solid #D4AF37; padding: 25px; border-radius: 20px; background: #000; color: white; font-family: sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
-        .sob-in { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #D4AF37; border-radius: 10px; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; color-scheme: dark; font-size: 16px; }
-        .sob-lab { font-size: 0.75rem; color: #D4AF37; font-weight: bold; text-transform: uppercase; display: block; margin-top: 15px; }
-        .sob-btn { background: transparent; color: #D4AF37; border: 2px solid #D4AF37; padding: 16px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; text-transform: uppercase; }
-        .sob-btn:hover { background: #D4AF37; color: #000; box-shadow: 0 0 20px #D4AF37; }
-        .sob-f { text-align: center; font-size: 0.7rem; margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; color: #888; }
+        .s-c { max-width: 400px; margin: 10px auto; border: 2px solid #D4AF37; padding: 25px; border-radius: 20px; background: #000; color: white; font-family: sans-serif; box-sizing: border-box; }
+        .s-i { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #D4AF37; border-radius: 10px; background: #111; color: white; box-sizing: border-box; color-scheme: dark; }
+        .s-l { font-size: 0.7rem; color: #D4AF37; font-weight: bold; text-transform: uppercase; display: block; margin-top: 15px; }
+        .s-b { background: transparent; color: #D4AF37; border: 2px solid #D4AF37; padding: 16px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; text-transform: uppercase; }
+        .s-b:hover { background: #D4AF37; color: #000; }
+        .s-v { background: none; border: 1.5px solid #D4AF37; color: #D4AF37; padding: 8px 20px; border-radius: 50px; cursor: pointer; display: block; margin: 0 auto 15px auto; font-size: 0.7rem; font-weight: bold; }
     </style>
-
-    <div id="sob_v" class="sob-card">
-        <h3 style="text-align: center; color: #D4AF37; margin: 0; letter-spacing: 2px;">📅 ${nombre.toUpperCase()}</h3>
-        <label class="sob-lab">Tu Nombre:</label>
-        <input type="text" id="s_n" class="sob-in" placeholder="Nombre y Apellido">
-        <label class="sob-lab">Día del Turno:</label>
-        <input type="date" id="s_f" class="sob-in">
-        <label class="sob-lab">Hora Deseada:</label>
-        <input type="time" id="s_h" class="sob-in">
-        <button class="sob-btn" onclick="s_enviar()">Solicitar Turno Ahora</button>
-        <div class="sob-f">Desarrollado por <a href="https://portaldigitalsoft.github.io/PORTAL_DIGITAL_SOFTWARE_TD/" style="color:#D4AF37; text-decoration:none; font-weight:bold;">Portal Digital</a></div>
+    <button class="s-v" onclick="${accionVolver}">⬅️ VOLVER</button>
+    <div class="s-c">
+        <h3 style="text-align: center; color: #D4AF37; margin: 0;">📅 ${nombre.toUpperCase()}</h3>
+        <label class="s-l">Nombre:</label><input type="text" id="sn" class="s-i" placeholder="Tu nombre">
+        <label class="s-l">Día:</label><input type="date" id="sf" class="s-i">
+        <label class="s-l">Hora:</label><input type="time" id="sh" class="s-i">
+        <button class="s-b" onclick="se()">Solicitar Turno</button>
+        <div style="text-align:center; font-size:0.6rem; margin-top:15px; opacity:0.6">Powered by Portal Digital</div>
     </div>
-
     <script>
-        const s_C = { w: "${ws}", h: ${JSON.stringify(config)} };
-        document.getElementById('s_f').min = new Date().toISOString().split('T')[0];
-
-        function s_enviar() {
-            const n = document.getElementById('s_n').value.trim();
-            const f = document.getElementById('s_f').value;
-            const h = document.getElementById('s_h').value;
-            if(!n || !f || !h) return alert("Por favor, completa todos los datos.");
-            
-            const lock = localStorage.getItem("s_l_" + s_C.w);
-            if(lock && (Date.now() - lock < 86400000)) return alert("Estimado/a, ya recibimos una solicitud tuya. Intenta nuevamente en 24 horas.");
-
-            const dia = (new Date(f + 'T00:00:00').getDay() + 6) % 7;
-            const conf = s_C.h[dia];
-            if(conf.c) return alert("Lo sentimos, este día el establecimiento se encuentra cerrado.");
-
+        const sC = { w: "${ws}", h: ${JSON.stringify(config)} };
+        document.getElementById('sf').min = new Date().toISOString().split('T')[0];
+        function se() {
+            const n = document.getElementById('sn').value.trim(), f = document.getElementById('sf').value, h = document.getElementById('sh').value;
+            if(!n || !f || !h) return alert("Completa los datos.");
+            const dS = (new Date(f + 'T00:00:00').getDay() + 6) % 7, conf = sC.h[dS];
+            if(conf.c) return alert("Cerrado este día.");
             const tM = (t) => { const [hrs, mins] = t.split(':').map(Number); return hrs * 60 + mins; };
-            const hE = tM(h);
-            const ok = (hE >= tM(conf.m1) && hE <= tM(conf.m2)) || (hE >= tM(conf.t1) && hE <= tM(conf.t2));
-            if(!ok) return alert("El horario seleccionado está fuera de nuestro rango de atención comercial.");
-
-            if(f === new Date().toISOString().split('T')[0]) {
-                const ahora = new Date();
-                if(hE < (ahora.getHours()*60 + ahora.getMinutes() + 60)) return alert("Los turnos para hoy deben pedirse con al menos 1 hora de anticipación.");
-            }
-
-            localStorage.setItem("s_l_" + s_C.w, Date.now());
-            const msg = "Hola! Soy *" + n + "*, quiero reservar un turno para el día *" + f.split('-').reverse().join('/') + "* a las *" + h + "*.";
-            window.open("https://wa.me/"+s_C.w+"?text="+encodeURIComponent(msg));
+            const hE = tM(h), ok = (hE >= tM(conf.m1) && hE <= tM(conf.m2)) || (hE >= tM(conf.t1) && hE <= tM(conf.t2));
+            if(!ok) return alert("Fuera de horario comercial.");
+            if(f === new Date().toISOString().split('T')[0] && hE < (new Date().getHours()*60 + new Date().getMinutes() + 60)) return alert("Mínimo 1 hora de antelación.");
+            window.open("https://wa.me/"+sC.w+"?text="+encodeURIComponent("Turno: "+n+" el "+f+" a las "+h));
         }
     <\/script>
 </div>`;
 
         const out = document.getElementById('codigo_salida');
-        out.value = code;
+        out.value = finalCode;
         out.style.display = 'block';
         document.getElementById('copy_msg').style.display = 'block';
         out.select();
