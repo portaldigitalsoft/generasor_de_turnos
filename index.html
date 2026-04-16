@@ -2,204 +2,147 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Builder | Sistema Soberano</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soberano Builder | Panel Maestro</title>
     <style>
         :root { --gold: #D4AF37; --dark-bg: #0a0a0a; --glass: rgba(255, 255, 255, 0.05); }
-        body { background: var(--dark-bg); color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 40px; display: flex; flex-direction: column; align-items: center; }
-        .builder-container { max-width: 800px; width: 100%; background: linear-gradient(145deg, #1a1a1a, #000); border: 2px solid var(--gold); border-radius: 20px; padding: 30px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
-        h1 { color: var(--gold); text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+        body { background: var(--dark-bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .builder-container { max-width: 850px; width: 100%; background: linear-gradient(145deg, #1a1a1a, #000); border: 2px solid var(--gold); border-radius: 20px; padding: 30px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); box-sizing: border-box; }
+        h1 { color: var(--gold); text-align: center; text-transform: uppercase; letter-spacing: 3px; border-bottom: 1px solid var(--gold); padding-bottom: 15px; margin-top: 0; }
         .section { margin-bottom: 25px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; background: var(--glass); }
-        .grid-horarios { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: center; margin-bottom: 10px; }
-        label { color: var(--gold); font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--gold); background: #000; color: #fff; outline: none; box-sizing: border-box; }
-        .btn-gold { 
-            background: transparent; color: var(--gold); border: 2px solid var(--gold); 
-            padding: 15px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; 
-            width: 100%; text-transform: uppercase; transition: 0.3s; margin-top: 20px;
-            box-shadow: inset 0 0 5px var(--gold);
-        }
-        .btn-gold:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
-        .cerrado-check { width: auto; margin-right: 5px; }
-        .day-row { border-bottom: 1px solid rgba(212, 175, 55, 0.1); padding: 10px 0; }
+        label { color: var(--gold); font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 8px; text-transform: uppercase; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--gold); background: #000; color: #fff; outline: none; box-sizing: border-box; margin-bottom: 15px; }
+        .grid-horarios { display: grid; grid-template-columns: 100px 1fr 1fr; gap: 15px; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.1); padding: 10px 0; }
+        .btn-generar { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 20px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.4s; font-size: 1rem; box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.2); }
+        .btn-generar:hover { background: var(--gold); color: #000; box-shadow: 0 0 30px var(--gold); }
+        #codigo_salida { width: 100%; height: 250px; margin-top: 25px; background: #050505; color: #00ff41; font-family: 'Courier New', monospace; border: 1px solid #444; padding: 15px; border-radius: 10px; display: none; box-sizing: border-box; }
+        .copy-info { color: #D4AF37; text-align: center; margin-top: 10px; display: none; font-weight: bold; animation: fade 1.5s infinite; }
+        @keyframes fade { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
     <div class="builder-container">
-        <h1>🛠️ Generador de Turnos</h1>
+        <h1>🛠️ PANEL MAESTRO SOBERANO</h1>
         
         <div class="section">
-            <label>WhatsApp del Cliente (Con código de país, ej: 5493764...):</label>
+            <label>Nombre del Negocio:</label>
+            <input type="text" id="nombre_negocio" placeholder="Ej: Barbería El Soberano">
+            <label>WhatsApp (Sin el +):</label>
             <input type="text" id="ws_num" placeholder="5493764263698">
-            <label style="margin-top:15px;">URL de Retorno (Botón Volver):</label>
-            <input type="text" id="url_back" placeholder="https://tu-tarjeta.github.io/principal/">
         </div>
 
         <div class="section">
-            <label>CONFIGURACIÓN DE HORARIOS</label>
-            <div id="dias_config">
-                </div>
+            <label>CONFIGURAR HORARIOS DE ATENCIÓN</label>
+            <div id="contenedor_dias"></div>
         </div>
 
-        <button class="btn-gold" onclick="generarArchivo()">Descargar index.html Listo 🚀</button>
+        <button class="btn-generar" onclick="fabricarCodigo()">Generar Módulo de Turnos 🚀</button>
+        
+        <textarea id="codigo_salida" readonly></textarea>
+        <div id="copy_msg" class="copy-info">¡CÓDIGO GENERADO! COPIA Y PEGA EN TU TARJETA DIGITAL</div>
     </div>
 
 <script>
-    const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-    const container = document.getElementById('dias_config');
+    const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+    const contenedor = document.getElementById('contenedor_dias');
 
-    // Generar campos para cada día
-    dias.forEach(dia => {
+    diasSemana.forEach(dia => {
         const div = document.createElement('div');
-        div.className = 'day-row';
+        div.className = 'grid-horarios';
         div.innerHTML = `
-            <div class="grid-horarios">
-                <div style="font-weight:bold">${dia}</div>
-                <div>
-                    <label>Mañana (Inicio - Fin)</label>
-                    <div style="display:flex; gap:5px">
-                        <input type="time" class="h-ini" data-dia="${dia}" value="08:30">
-                        <input type="time" class="h-fin" data-dia="${dia}" value="12:30">
-                    </div>
-                </div>
-                <div>
-                    <label>Tarde (Inicio - Fin)</label>
-                    <div style="display:flex; gap:5px">
-                        <input type="time" class="h-ini-t" data-dia="${dia}" value="16:30">
-                        <input type="time" class="h-fin-t" data-dia="${dia}" value="20:30">
-                    </div>
-                </div>
+            <div style="color:var(--gold); font-weight:bold">${dia}</div>
+            <div style="display:flex; gap:5px">
+                <input type="time" class="h-ini" value="08:30" style="margin:0">
+                <input type="time" class="h-fin" value="12:30" style="margin:0">
             </div>
-            <label><input type="checkbox" class="cerrado-check" data-dia="${dia}"> Cerrado este día</label>
+            <div style="display:flex; gap:5px">
+                <input type="time" class="h-ini-t" value="16:30" style="margin:0">
+                <input type="time" class="h-fin-t" value="20:30" style="margin:0">
+            </div>
+            <div style="grid-column: span 3; font-size: 0.75rem;">
+                <label style="display:inline; margin:0; color:#888"><input type="checkbox" class="check-cerrado" ${dia==='Domingo'?'checked':''}> Marcar como Cerrado</label>
+            </div>
         `;
-        container.appendChild(div);
+        contenedor.appendChild(div);
     });
 
-    function generarArchivo() {
+    function fabricarCodigo() {
+        const nombre = document.getElementById('nombre_negocio').value || "RESERVAR TURNO";
         const ws = document.getElementById('ws_num').value;
-        const url = document.getElementById('url_back').value;
-        
-        let configHorarios = {};
-        document.querySelectorAll('.day-row').forEach((row, index) => {
-            const diaNombre = dias[index];
-            const cerrado = row.querySelector('.cerrado-check').checked;
-            
-            configHorarios[index] = {
-                cerrado: cerrado,
-                m_ini: row.querySelector('.h-ini').value,
-                m_fin: row.querySelector('.h-fin').value,
-                t_ini: row.querySelector('.h-ini-t').value,
-                t_fin: row.querySelector('.h-fin-t').value
+        if(!ws) return alert("Por favor, ingresa el WhatsApp.");
+
+        let config = {};
+        document.querySelectorAll('.grid-horarios').forEach((row, i) => {
+            config[i] = {
+                c: row.querySelector('.check-cerrado').checked,
+                m1: row.querySelector('.h-ini').value, m2: row.querySelector('.h-fin').value,
+                t1: row.querySelector('.h-ini-t').value, t2: row.querySelector('.h-fin-t').value
             };
         });
 
-        const codigoFinal = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserva de Turnos</title>
+        const code = `
+<div id="sob_modulo_root">
     <style>
-        body { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; font-family: sans-serif; }
-        .agenda-container { max-width: 380px; width: 100%; border: 2px solid #D4AF37; padding: 25px; border-radius: 20px; background: linear-gradient(135deg, rgba(20, 0, 40, 0.95), rgba(40, 0, 70, 0.95)); color: white; box-shadow: 0 12px 40px rgba(0,0,0,0.8); box-sizing: border-box; }
-        .campo-entrada { width: 100%; padding: 14px; margin-top: 8px; border: 1px solid #D4AF37; border-radius: 10px; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; outline: none; color-scheme: dark; }
-        label { font-size: 0.75rem; color: #D4AF37; font-weight: bold; display: block; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-enviar { background: transparent; color: #D4AF37; border: 2px solid #D4AF37; padding: 16px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 25px; width: 100%; text-transform: uppercase; box-shadow: inset 0 0 10px rgba(212,175,55,0.2); transition: 0.3s; }
-        .btn-enviar:hover { background: #D4AF37; color: #000; box-shadow: 0 0 20px #D4AF37; }
-        .btn-volver { background: none; border: 1.5px solid #D4AF37; color: #D4AF37; padding: 10px 25px; border-radius: 50px; cursor: pointer; margin-bottom: 20px; font-weight: bold; transition: 0.3s; }
-        .btn-volver:hover { background: rgba(212,175,55,0.1); }
-        .mini-firma { text-align: center; margin-top: 25px; border-top: 1px solid rgba(212,175,55,0.2); padding-top: 15px; font-size: 0.7rem; color: #ccc; }
-        .mini-firma a { color: #D4AF37; text-decoration: none; font-weight: bold; }
+        .sob-card { max-width: 400px; margin: 20px auto; border: 2px solid #D4AF37; padding: 25px; border-radius: 20px; background: #000; color: white; font-family: sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .sob-in { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #D4AF37; border-radius: 10px; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; color-scheme: dark; font-size: 16px; }
+        .sob-lab { font-size: 0.75rem; color: #D4AF37; font-weight: bold; text-transform: uppercase; display: block; margin-top: 15px; }
+        .sob-btn { background: transparent; color: #D4AF37; border: 2px solid #D4AF37; padding: 16px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; text-transform: uppercase; }
+        .sob-btn:hover { background: #D4AF37; color: #000; box-shadow: 0 0 20px #D4AF37; }
+        .sob-f { text-align: center; font-size: 0.7rem; margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; color: #888; }
     </style>
-</head>
-<body>
-    <button class="btn-volver" onclick="window.location.href='${url}'">⬅️ VOLVER</button>
-    <div id="formulario_container" class="agenda-container">
-        <h3 style="text-align: center; color: #D4AF37; margin: 0; letter-spacing: 2px;">📅 RESERVAR TURNO</h3>
-        <label>Nombre completo:</label>
-        <input type="text" id="nombre_cita" class="campo-entrada" placeholder="Tu nombre">
-        <label>Fecha del turno:</label>
-        <input type="date" id="fecha_cita" class="campo-entrada">
-        <label>Hora deseada:</label>
-        <input type="time" id="hora_cita" class="campo-entrada">
-        <button class="btn-enviar" onclick="enviarReserva()"> ENVIAR SOLICITUD </button>
-        <div class="mini-firma">
-            Desarrollado por <a href="https://portaldigitalsoft.github.io/PORTAL_DIGITAL_SOFTWARE_TD/" target="_blank">Portal Digital</a> 2026®<br>
-            <b style="color:#D4AF37">SISTEMA SOBERANO</b>
-        </div>
-    </div>
-    <div id="mensaje_bloqueo" class="agenda-container" style="display: none; text-align: center;">
-        <h2 style="color: #D4AF37;">⚠️ ESPERA 24 HORAS</h2>
-        <p>Ya enviaste una solicitud recientemente. Intenta mañana.</p>
-        <button class="btn-enviar" onclick="window.location.href='${url}'">VOLVER</button>
+
+    <div id="sob_v" class="sob-card">
+        <h3 style="text-align: center; color: #D4AF37; margin: 0; letter-spacing: 2px;">📅 ${nombre.toUpperCase()}</h3>
+        <label class="sob-lab">Tu Nombre:</label>
+        <input type="text" id="s_n" class="sob-in" placeholder="Nombre y Apellido">
+        <label class="sob-lab">Día del Turno:</label>
+        <input type="date" id="s_f" class="sob-in">
+        <label class="sob-lab">Hora Deseada:</label>
+        <input type="time" id="s_h" class="sob-in">
+        <button class="sob-btn" onclick="s_enviar()">Solicitar Turno Ahora</button>
+        <div class="sob-f">Desarrollado por <a href="https://portaldigitalsoft.github.io/PORTAL_DIGITAL_SOFTWARE_TD/" style="color:#D4AF37; text-decoration:none; font-weight:bold;">Portal Digital</a></div>
     </div>
 
     <script>
-        const CONFIG = {
-            ws: "${ws}",
-            horarios: ${JSON.stringify(configHorarios)}
-        };
+        const s_C = { w: "${ws}", h: ${JSON.stringify(config)} };
+        document.getElementById('s_f').min = new Date().toISOString().split('T')[0];
 
-        const fInput = document.getElementById('fecha_cita');
-        const hoy = new Date().toISOString().split('T')[0];
-        fInput.min = hoy;
+        function s_enviar() {
+            const n = document.getElementById('s_n').value.trim();
+            const f = document.getElementById('s_f').value;
+            const h = document.getElementById('s_h').value;
+            if(!n || !f || !h) return alert("Por favor, completa todos los datos.");
+            
+            const lock = localStorage.getItem("s_l_" + s_C.w);
+            if(lock && (Date.now() - lock < 86400000)) return alert("Estimado/a, ya recibimos una solicitud tuya. Intenta nuevamente en 24 horas.");
 
-        window.onload = function() {
-            const registro = localStorage.getItem("soberano_v2_" + CONFIG.ws);
-            if (registro) {
-                if (Date.now() - parseInt(registro) < 86400000) {
-                    document.getElementById('formulario_container').style.display = 'none';
-                    document.getElementById('mensaje_bloqueo').style.display = 'block';
-                }
-            }
-        };
+            const dia = (new Date(f + 'T00:00:00').getDay() + 6) % 7;
+            const conf = s_C.h[dia];
+            if(conf.c) return alert("Lo sentimos, este día el establecimiento se encuentra cerrado.");
 
-        function enviarReserva() {
-            const nombre = document.getElementById('nombre_cita').value.trim();
-            const fecha = fInput.value;
-            const hora = document.getElementById('hora_cita').value;
+            const tM = (t) => { const [hrs, mins] = t.split(':').map(Number); return hrs * 60 + mins; };
+            const hE = tM(h);
+            const ok = (hE >= tM(conf.m1) && hE <= tM(conf.m2)) || (hE >= tM(conf.t1) && hE <= tM(conf.t2));
+            if(!ok) return alert("El horario seleccionado está fuera de nuestro rango de atención comercial.");
 
-            if (!nombre || !fecha || !hora) return alert("Completa todos los campos");
-
-            const fechaObj = new Date(fecha + 'T00:00:00');
-            const diaSemana = (fechaObj.getDay() + 6) % 7; // Ajuste para Lunes=0
-            const configDia = CONFIG.horarios[diaSemana];
-
-            if (configDia.cerrado) return alert("❌ Lo sentimos, el comercio está cerrado este día.");
-
-            // Validar horarios
-            const minHora = (h) => {
-                const [hrs, mins] = h.split(':').map(Number);
-                return hrs * 60 + mins;
-            };
-
-            const hElegida = minHora(hora);
-            const dentroRango = (hElegida >= minHora(configDia.m_ini) && hElegida <= minHora(configDia.m_fin)) ||
-                               (hElegida >= minHora(configDia.t_ini) && hElegida <= minHora(configDia.t_fin));
-
-            if (!dentroRango) return alert("❌ Horario fuera del rango de atención al público.");
-
-            // Validar antelación 1h si es hoy
-            if (fecha === hoy) {
+            if(f === new Date().toISOString().split('T')[0]) {
                 const ahora = new Date();
-                const hAhora = ahora.getHours() * 60 + ahora.getMinutes();
-                if (hElegida < hAhora + 60) return alert("❌ Debes reservar con al menos 1 hora de anticipación.");
+                if(hE < (ahora.getHours()*60 + ahora.getMinutes() + 60)) return alert("Los turnos para hoy deben pedirse con al menos 1 hora de anticipación.");
             }
 
-            localStorage.setItem("soberano_v2_" + CONFIG.ws, Date.now().toString());
-            const msj = "Hola! Soy *" + nombre + "*, quiero un turno para el día *" + fecha + "* a las *" + hora + "*.";
-            window.open("https://wa.me/" + CONFIG.ws + "?text=" + encodeURIComponent(msj), '_blank');
+            localStorage.setItem("s_l_" + s_C.w, Date.now());
+            const msg = "Hola! Soy *" + n + "*, quiero reservar un turno para el día *" + f.split('-').reverse().join('/') + "* a las *" + h + "*.";
+            window.open("https://wa.me/"+s_C.w+"?text="+encodeURIComponent(msg));
         }
     <\/script>
-</body>
-</html>`;
+</div>`;
 
-        const blob = new Blob([codigoFinal], {type: 'text/html'});
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = "index.html";
-        link.click();
+        const out = document.getElementById('codigo_salida');
+        out.value = code;
+        out.style.display = 'block';
+        document.getElementById('copy_msg').style.display = 'block';
+        out.select();
     }
 </script>
 </body>
